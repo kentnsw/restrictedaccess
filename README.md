@@ -1,8 +1,8 @@
 # Restricted Access
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI.
-The function removes any Security Group (SG) rule where the source is 0.0.0.0/0 and the port is 22 (ssh) periodically.
-With customized parameters, it can evaluate any given ports. To opt out the remediation process, add a tag {'UnrestrictedAccess':'True'} to those security grouups.
+The function removes any Security Group (SG) rule where the source is `0.0.0.0/0` and the port is 22 (ssh) periodically.
+With customized parameters, it can evaluate any given ports. To opt out the remediation process, add a tag `'UnrestrictedAccess':'True'` to those security grouups.
 After the evaluation and remediation, a report will send to the SNS topic. The report would look like
 
 ```json
@@ -42,9 +42,9 @@ sam deploy --guided
 Note:
 
 - Make sure you have the permissions including create new IAM role, describe security groups, revoke ingress, create SNS topic and publish messages.
-- Subscribe to the new created SNS topic (security_channel_restricted_access) to see the remediation report
-- CAPABILITY_NAMED_IAM is required while dploy
-- It'd better set the stack name as RestrictedSshAccessStack for consitency
+- `CAPABILITY_NAMED_IAM` is required while dploy. Change it to `capabilities = "CAPABILITY_NAMED_IAM"` in your `samconfig.toml`
+- Subscribe to the new created SNS topic (`security_channel_restricted_access`) to see the remediation report
+- It'd better set the stack name as `RestrictedSshAccessStack` for consitency
 - Use the parameter overwrites for customization while deploying the stack, for example:
 
 ```bash

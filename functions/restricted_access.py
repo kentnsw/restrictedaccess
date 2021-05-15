@@ -103,9 +103,7 @@ def sendSnsReport(report):
         else:
             raise Exception(res)
     except Exception as e:
-        logger.error(f'Failed to send report to topic {SNS_TOPIC_ARN} with message:')
-        logger.error(report)
-        logger.error(e)
+        logger.exception(f'Failed to send report to topic {SNS_TOPIC_ARN} with message: {report}')
 
 
 class IpPermission:
