@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Manage necessary resources for restricted access (e.g. ssh access from 0.0.0.0/0) feature, including role, lambda app and SNS topic.
+
+Parameters:
+  CronJobSchedule:
+    Default: cron(0 1 * * ? *)
+    Description: Evaluate schedule, default cron(0 1 * * ? *)
+    Type: String
+  PortList:
+    Default: 22
+    Description: Port list e.g. 22,3306, default 22
+    Type: String
+
+Resources:
+  RestrictedAccessFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.8
+      MemorySize: 128
+      CodeUri: ./functions
+      Handler: restricted_access.lambda_handler
+      Description: It removes any Security Group (SG) rule where the source is 0.0.0.0/0 and the port is 22 (ssh).
+      Timeout: 8
+      Role: !GetAtt LambdaExecuteRole.Arn
+      Events:
+        SimpleCWEEvent:
+          Type: Schedule
+          Properties:
+            Schedule: !Ref CronJobSchedule
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref SecurityChannel
+          PORT_LIST: !Ref PortList
+
+  SecurityChannel:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: security_channel_restricted_access
+    # DeletionPolicy: Retain
+
+  LambdaExecuteRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      RoleName: !Sub ${AWS::StackName}-LambdaExecuteRole4RestricedAccess
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ec2:DescribeSecurityGroups"
+                  - "ec2:DescribeTags"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "ec2:RevokeSecurityGroupIngress"
+                Resource: !Sub "arn:aws:ec2:*:${AWS::AccountId}:security-group/*"
+              - Effect: Allow
+                Action:
+                  - "sns:Publish"
+                Resource: !Ref SecurityChannel
+          PolicyName: DescribeUpdateSecurityGroups
+
+Outputs:
+  SnsTopicArn:
+    Value: !Ref SecurityChannel
+    Description: Output the SNS topic ARN

@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "RestrictedSshAccessStack"
+s3_bucket = ""
+s3_prefix = "restricted_access"
+region = "ap-southeast-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "AppId=\"restricted_access\""
+
