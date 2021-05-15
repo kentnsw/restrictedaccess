@@ -15,24 +15,25 @@ def aws_credentials():
     os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
     os.environ["AWS_SECURITY_TOKEN"] = "testing"
     os.environ["AWS_SESSION_TOKEN"] = "testing"
+    os.environ['AWS_REGION'] = "us-east-1"
 
 
 @pytest.fixture
 def ec2_client(aws_credentials):
     with mock_ec2():
-        ec2c = boto3.client('ec2')
+        ec2c = boto3.client('ec2', region_name="us-east-1")
         yield ec2c
 
 
 @pytest.fixture
 def ec2_resource(aws_credentials):
     with mock_ec2():
-        ec2r = boto3.resource('ec2')
+        ec2r = boto3.resource('ec2', region_name="us-east-1")
         yield ec2r
 
 
 @pytest.fixture
 def sns_client(aws_credentials):
     with mock_sns():
-        snsc = boto3.client('sns')
+        snsc = boto3.client('sns', region_name="us-east-1")
         yield snsc

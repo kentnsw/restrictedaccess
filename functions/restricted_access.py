@@ -28,9 +28,10 @@ def lambda_handler(event, context):
 
 
 def evaluateSecurityGroups():
+    AWS_REGION = os.environ['AWS_REGION']
+    EC2_CLIENT = boto3.client('ec2', region_name=AWS_REGION)
+    EC2_RESOURSE = boto3.resource('ec2', region_name=AWS_REGION)
     content = []
-    EC2_CLIENT = boto3.client('ec2')
-    EC2_RESOURSE = boto3.resource('ec2')
 
     try:
         # NOTE: moto_ec2 hasn't supported ip-permission.cidr fileter
@@ -54,8 +55,7 @@ def evaluateSecurityGroups():
             for ipPerm in sg.ipPermissions:
                 # NOTE: this is a hard code env name in CF template for quick deploy
                 for port in os.environ['PORT_LIST'].split(','):
-                    delIpPerm = ipPerm.findIpv4Permission(
-                        int(port), 'tcp|udp', '0.0.0.0/0')
+                    delIpPerm = ipPerm.findIpv4Permission(int(port), 'tcp|udp', '0.0.0.0/0')
                     if delIpPerm:
                         tmp = revokeIngress(EC2_RESOURSE, sg, delIpPerm)
                         if tmp:
@@ -87,7 +87,8 @@ def revokeIngress(EC2_RESOURSE, sg, delIpPerm):
 
 
 def sendSnsReport(report):
-    SNS_CLIENT = boto3.client('sns')
+    AWS_REGION = os.environ['AWS_REGION']
+    SNS_CLIENT = boto3.client('sns', region_name=AWS_REGION)
 
     # NOTE: this is a hard code env name in CF template for quick deploy
     SNS_TOPIC_ARN = os.environ['SNS_TOPIC_ARN']
@@ -139,8 +140,7 @@ class SecurityGroup:
         self.name = sg['GroupName']
         self.vpcId = sg['VpcId'] if 'VpcId' in sg else None
         self.tags = sg['Tags'] if 'Tags' in sg else None
-        self.ipPermissions = [IpPermission(perm)
-                              for perm in sg['IpPermissions']]
+        self.ipPermissions = [IpPermission(perm) for perm in sg['IpPermissions']]
         self.sg = sg
 
     def getTagValue(self, key):
@@ -157,6 +157,7 @@ if __name__ == "__main__":
     class Context:
         pass
 
-    os.environ['SNS_TOPIC_ARN'] = 'arn:aws:sns:ap-southeast-2:065125734684:security_channel_restricted_access'
+    os.environ['SNS_TOPIC_ARN'] = 'arn:aws:sns:ap-southeast-2:0123456789012:security_channel_restricted_access'
     os.environ['PORT_LIST'] = '22,3306'
+    os.environ['AWS_REGION'] = 'us-east-1'
     print(lambda_handler({}, Context()))

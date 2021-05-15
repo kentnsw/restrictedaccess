@@ -3,10 +3,10 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "RestrictedSshAccessStack"
-s3_bucket = ""
-s3_prefix = "restricted_access"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-jkf2mwx84yt6"
+s3_prefix = "RestrictedSshAccessStack"
 region = "ap-southeast-2"
 confirm_changeset = true
 capabilities = "CAPABILITY_NAMED_IAM"
-parameter_overrides = "AppId=\"restricted_access\""
+parameter_overrides = "CronJobSchedule=\"cron(30 1 * * ? *)\" PortList=\"22,3306\""
 
