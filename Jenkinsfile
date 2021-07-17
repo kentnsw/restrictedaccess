@@ -9,11 +9,21 @@ pipeline {
         }
       }
     }
+
     stage('test') {
       steps {
         withPythonEnv('/Users/ouj/.pyenv/shims/python') {
           sh 'cd tests; pytest'
         }
+      }
+    }
+
+    stage('deploy') {
+      when {
+        branch 'master'
+      }
+      steps {
+        echo 'deploy to aws'
       }
     }
   }
