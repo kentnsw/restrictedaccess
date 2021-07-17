@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        withPythonEnv('~/.pyenv/shims/python') {
+        withPythonEnv('~/.pyenv/versions/3.8.11/bin/python') {
           sh 'pip install -r functions/requirements.txt'
           sh 'pip install -r tests/requirements.txt'
         }
@@ -12,7 +12,7 @@ pipeline {
 
     stage('test') {
       steps {
-        withPythonEnv('~/.pyenv/shims/python') {
+        withPythonEnv('~/.pyenv/versions/3.8.11/bin/python') {
           sh 'cd tests; pytest'
         }
       }
