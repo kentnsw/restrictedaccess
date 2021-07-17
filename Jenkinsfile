@@ -1,15 +1,19 @@
 pipeline {
-  agent { docker { image 'python:3.8-alpine' } }
+  agent any
   stages {
     stage('build') {
       steps {
-        sh 'pip install -r functions/requirements.txt'
-        sh 'pip install -r tests/requirements.txt'
+        withPythonEnv('/Users/ouj/.pyenv/shims/python') {
+          sh 'pip install -r functions/requirements.txt'
+          sh 'pip install -r tests/requirements.txt'
+        }
       }
     }
     stage('test') {
       steps {
-        sh 'cd tests; pytest'
+        withPythonEnv('/Users/ouj/.pyenv/shims/python') {
+          sh 'cd tests; pytest'
+        }
       }
     }
   }
