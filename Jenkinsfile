@@ -23,7 +23,7 @@ pipeline {
         branch 'main'
       }
       steps {
-        echo 'deploy to aws'
+        echo 'todo: deploy to aws'
       }
     }
   }
