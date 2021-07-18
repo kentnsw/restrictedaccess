@@ -19,6 +19,10 @@ After the evaluation and remediation, a report will send to the SNS topic. The r
 }
 ```
 
+## Prerequisite
+- An testing AWS account with appropriate privileges
+- awscli, samcli
+
 ## Download and Tests
 
 Clone the repository into your local environment.
