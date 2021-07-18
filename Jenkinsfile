@@ -20,7 +20,7 @@ pipeline {
 
     stage('deploy') {
       when {
-        branch 'master'
+        branch 'main'
       }
       steps {
         echo 'deploy to aws'
