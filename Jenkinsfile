@@ -3,8 +3,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-	sh 'echo $PATH'
-	sh 'ls -l /usr/local/bin'
+	sh 'export PATH=/usr/local/bin:$PATH; echo $PATH'
         withPythonEnv('python3') {
           sh 'pip install -r functions/requirements.txt'
           sh 'pip install -r tests/requirements.txt'
@@ -14,6 +13,7 @@ pipeline {
 
     stage('test') {
       steps {
+	sh 'export PATH=/usr/local/bin:$PATH; echo $PATH'
         withPythonEnv('python3') {
           sh 'cd tests; pytest'
         }
