@@ -3,6 +3,8 @@ pipeline {
   stages {
     stage('build') {
       steps {
+	sh 'echo $PATH'
+	sh 'ls -l /usr/local/bin'
         withPythonEnv('python3') {
           sh 'pip install -r functions/requirements.txt'
           sh 'pip install -r tests/requirements.txt'
