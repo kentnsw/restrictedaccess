@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        withPythonEnv('/Users/ouj/.pyenv/shims/python') {
+        withPythonEnv('/usr/local/bin/python3') {
           sh 'pip install -r functions/requirements.txt'
           sh 'pip install -r tests/requirements.txt'
         }
@@ -12,7 +12,7 @@ pipeline {
 
     stage('test') {
       steps {
-        withPythonEnv('/Users/ouj/.pyenv/shims/python') {
+        withPythonEnv('/usr/local/bin/python3') {
           sh 'cd tests; pytest'
         }
       }
