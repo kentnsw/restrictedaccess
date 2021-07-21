@@ -73,4 +73,3 @@ To delete the application, you can run the following:
 aws cloudformation delete-stack --stack-name RestrictedSshAccessStack
 ```
 
-Changes.
